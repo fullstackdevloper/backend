@@ -1,0 +1,19 @@
+{
+  "name": "polaritydigital",
+  "version": "1.0.0",
+  "description": "cryptocurrency data analysis website",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jesse-Runner/backend.git"
+  },
+  "author": "Jerry E",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Jesse-Runner/backend/issues"
+  },
+  "homepage": "https://github.com/Jesse-Runner/backend#readme"
+}
