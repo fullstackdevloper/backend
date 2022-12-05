@@ -23,5 +23,37 @@
     {
       "name": "Polarity Digital Api's"
     }
-  ]
+  ],
+  "paths": {
+    "/api/getCoin": {
+      "get": {
+        "tags": [
+          "Coin Api's"
+        ],
+        "description": "Get Coin",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "coin",
+            "in": "query"
+          },
+          {
+            "name": "metric",
+            "in": "query"
+          },
+          {
+            "name": "limit",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Data loaded successfully"
+          }
+        }
+      }
+    }
+  }
 }

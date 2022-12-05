@@ -19,6 +19,9 @@ app.get("/", (req, res) => {
   res.send(`<h1>Polarity Digital API</h1>`);
 });
 
+require('./routes/chart.routes')(app);
+require('./routes/coins/coins.routes')(app);
+
 app.use("/api-docs", swaggerUi.serve);
 app.get("/api-docs", swaggerUi.setup(swaggerDocument));
 
