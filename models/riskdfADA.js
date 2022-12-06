@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class riskdfADA extends Model {
+  class riskdfada extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -13,13 +13,27 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  riskdfADA.init({
-    userID: DataTypes.STRING,
-    name: DataTypes.STRING,
-    configData: DataTypes.JSONB
-  }, {
+  riskdfada.init({
+    closetime:DataTypes.STRING,
+    closeprice:DataTypes.STRING,
+    udpil:DataTypes.TEXT,
+    udpim:DataTypes.TEXT,
+    udpis:DataTypes.TEXT,
+    mbi:DataTypes.TEXT,
+    tci:DataTypes.TEXT,
+    tcicv:DataTypes.TEXT,
+    mdccv:DataTypes.TEXT,
+    mdcdp:DataTypes.TEXT,
+    volume:DataTypes.TEXT,
+    mc:DataTypes.TEXT,
+    cs:DataTypes.TEXT,
+    // aa:DataTypes.STRING,
+  },
+   {
     sequelize,
-    modelName: 'riskdfADA',
+    timestamps: false,
+    tableName: 'riskdfada',
+    modelName: 'riskdfada',
   });
-  return riskdfADA;
+  return riskdfada;
 };

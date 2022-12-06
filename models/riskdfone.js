@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class riskdfbtc extends Model {
+  class riskdfone extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  riskdfbtc.init({
+  riskdfone.init({
     closetime:DataTypes.STRING,
     closeprice:DataTypes.STRING,
     udpil:DataTypes.TEXT,
@@ -32,8 +32,8 @@ module.exports = (sequelize, DataTypes) => {
    {
     sequelize,
     timestamps: false,
-    tableName: 'riskdfbtc',
-    modelName: 'riskdfbtc',
+    tableName: 'riskdfone',
+    modelName: 'riskdfone',
   });
-  return riskdfbtc;
+  return riskdfone;
 };

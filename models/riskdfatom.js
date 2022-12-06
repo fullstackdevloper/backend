@@ -3,17 +3,12 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class riskdfbtc extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
+  class riskdfatom extends Model {
     static associate(models) {
-      // define association here
+    
     }
   }
-  riskdfbtc.init({
+  riskdfatom.init({
     closetime:DataTypes.STRING,
     closeprice:DataTypes.STRING,
     udpil:DataTypes.TEXT,
@@ -32,8 +27,8 @@ module.exports = (sequelize, DataTypes) => {
    {
     sequelize,
     timestamps: false,
-    tableName: 'riskdfbtc',
-    modelName: 'riskdfbtc',
+    tableName: 'riskdfatom',
+    modelName: 'riskdfatom',
   });
-  return riskdfbtc;
+  return riskdfatom;
 };
