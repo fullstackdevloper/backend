@@ -39,7 +39,7 @@ const connect = () => {
   db.ksm = require("../models/riskdfksm")(sequelize, DataTypes, Model);
   db.link = require("../models/riskdflink")(sequelize, DataTypes, Model);
   db.ltc = require("../models/riskdfltc")(sequelize, DataTypes, Model);
-  db.matic = require("../models/riskdfmatic")(sequelize, DataTypes, Model);
+  //db.matic = require("../models/riskdfmatic")(sequelize, DataTypes, Model);
   db.near = require("../models/riskdfnear")(sequelize, DataTypes, Model);
   db.one = require("../models/riskdfone")(sequelize, DataTypes, Model);
   db.qnt = require("../models/riskdfqnt")(sequelize, DataTypes, Model);
@@ -49,7 +49,7 @@ const connect = () => {
   db.vet = require("../models/riskdfvet")(sequelize, DataTypes, Model);
   db.xrp = require("../models/riskdfxrp")(sequelize, DataTypes, Model);
   db.xtz = require("../models/riskdfxtz")(sequelize, DataTypes, Model);
-  db.zill = require("../models/riskdfzill")(sequelize, DataTypes, Model);
+  //db.zill = require("../models/riskdfzill")(sequelize, DataTypes, Model);
 
   return db;
 };
