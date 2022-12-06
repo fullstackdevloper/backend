@@ -8,5 +8,5 @@ module.exports = function (app) {
     res.header("Access-Control-Allow-Headers", "Content-Type");
     next();
   });
-  app.get("/api/getCoin",CoinController.getCoins);
+  app.get("/api/coin/historicalData",CoinController.getCoins);
 };

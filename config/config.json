@@ -1,23 +1,24 @@
 {
+
   "development": {
-    "username": "Master",
+    "username": "polarity_digital",
     "password": "AWS89!MB37",
-    "database": "postgres",
-    "host": "database-2.c7uiisvnir0x.us-east-2.rds.amazonaws.com",
+    "database": "polaritydigital",
+    "host": "polaritydigital.cvcreiofpfjs.us-east-2.rds.amazonaws.com",
     "dialect": "postgres"
   },
   "test": {
-    "username": "Master",
+    "username": "polarity_digital",
     "password": "AWS89!MB37",
-    "database": "postgres",
-    "host": "database-2.c7uiisvnir0x.us-east-2.rds.amazonaws.com",
+    "database": "polaritydigital",
+    "host": "polaritydigital.cvcreiofpfjs.us-east-2.rds.amazonaws.com",
     "dialect": "postgres"
   },
   "production": {
-    "username": "Master",
+    "username": "polarity_digital",
     "password": "AWS89!MB37",
-    "database": "postgres",
-    "host": "database-2.c7uiisvnir0x.us-east-2.rds.amazonaws.com",
+    "database": "polaritydigital",
+    "host": "polaritydigital.cvcreiofpfjs.us-east-2.rds.amazonaws.com",
     "dialect": "postgres"
   }
 }

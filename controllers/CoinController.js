@@ -43,25 +43,26 @@ exports.getCoins = [
     (req, res) => {
         db = connect();
       try {
-        let query =['id','CloseTime',
-            'price',
-            'udpiL',
-            'udpiM',
-            'udpiS',
+        let query =['closetime',
+            'closeprice',
+            'udpil',
+            'udpil',
+            'udpis',
             'mbi',
             'tci',
-            'tciCV',
-            'mdcCV',
-            'mdc',
+            'tcicv',
+            'mdccv',
+            'mdcdp',
             'volume',
             'mc',
             'cs',]
         let { coin,metric,limit } = req.query
+        coin = coin?coin:'btc'
           if(metric!== undefined){
             query = [metric]
           }
           limit = limit?limit:500
-          db.riskBTC.findAll({attributes:query,limit}).then((data)=>{
+          db[coin].findAll({attributes:query,limit}).then((data)=>{
             return apiResponse.successResponseWithData(
                 res,
                 "Data loaded successfully",

@@ -8,7 +8,6 @@ const connect = () => {
   const database = process.env.DB_NAME;
   const dialect = process.env.DB_DIALECT;
 
-  console.log("ggggggggggggg:",hostName,userName,password,dialect)
   const sequelize = new Sequelize(database, userName, password, {
     host: hostName,
     dialect: dialect,
@@ -24,9 +23,34 @@ const connect = () => {
   const db = {};
   db.Sequelize = Sequelize;
   db.sequelize = sequelize;
-  console.log("dbbbbbbb:",db)
-  db.chart = require("../models/chart")(sequelize, DataTypes, Model);
-  db.riskBTC = require("../models/riskdfBTC")(sequelize, DataTypes, Model);
+  db.btc = require("../models/riskdfbtc")(sequelize, DataTypes, Model);
+  db.ada = require("../models/riskdfada")(sequelize, DataTypes, Model);
+  db.algo = require("../models/riskdfalgo")(sequelize, DataTypes, Model);
+  db.atom = require("../models/riskdfatom")(sequelize, DataTypes, Model);
+  db.avax = require("../models/riskdfavax")(sequelize, DataTypes, Model);
+  db.bnb = require("../models/riskdfbnb")(sequelize, DataTypes, Model);
+  db.dot = require("../models/riskdfdot")(sequelize, DataTypes, Model);
+  db.egld = require("../models/riskdfegld")(sequelize, DataTypes, Model);
+  db.enj = require("../models/riskdfenj")(sequelize, DataTypes, Model);
+  db.eth = require("../models/riskdfeth")(sequelize, DataTypes, Model);
+  db.ftm = require("../models/riskdfftm")(sequelize, DataTypes, Model);
+  db.hbar = require("../models/riskdfhbar")(sequelize, DataTypes, Model);
+  db.hnt = require("../models/riskdfhnt")(sequelize, DataTypes, Model);
+  db.ksm = require("../models/riskdfksm")(sequelize, DataTypes, Model);
+  db.link = require("../models/riskdflink")(sequelize, DataTypes, Model);
+  db.ltc = require("../models/riskdfltc")(sequelize, DataTypes, Model);
+  //db.matic = require("../models/riskdfmatic")(sequelize, DataTypes, Model);
+  db.near = require("../models/riskdfnear")(sequelize, DataTypes, Model);
+  db.one = require("../models/riskdfone")(sequelize, DataTypes, Model);
+  db.qnt = require("../models/riskdfqnt")(sequelize, DataTypes, Model);
+  db.sand = require("../models/riskdfsand")(sequelize, DataTypes, Model);
+  db.sol = require("../models/riskdfsol")(sequelize, DataTypes, Model);
+  db.theta = require("../models/riskdftheta")(sequelize, DataTypes, Model);
+  db.vet = require("../models/riskdfvet")(sequelize, DataTypes, Model);
+  db.xrp = require("../models/riskdfxrp")(sequelize, DataTypes, Model);
+  db.xtz = require("../models/riskdfxtz")(sequelize, DataTypes, Model);
+  //db.zill = require("../models/riskdfzill")(sequelize, DataTypes, Model);
+
   return db;
 };
 

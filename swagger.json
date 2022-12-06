@@ -25,7 +25,7 @@
     }
   ],
   "paths": {
-    "/api/getCoin": {
+    "/api/coin/historicalData": {
       "get": {
         "tags": [
           "Coin Api's"
@@ -37,7 +37,8 @@
         "parameters": [
           {
             "name": "coin",
-            "in": "query"
+            "in": "query",
+            "required":true
           },
           {
             "name": "metric",
