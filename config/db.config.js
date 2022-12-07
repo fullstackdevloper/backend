@@ -22,7 +22,10 @@ const connect = () => {
 
   const db = {};
   db.Sequelize = Sequelize;
+  
   db.sequelize = sequelize;
+  db.riskdf = require("../models/riskdf")(sequelize, DataTypes, Model);
+  // db.marketcoin = require("../models/marketcoin")(sequelize, DataTypes, Model);
   db.btc = require("../models/riskdfbtc")(sequelize, DataTypes, Model);
   db.ada = require("../models/riskdfada")(sequelize, DataTypes, Model);
   db.algo = require("../models/riskdfalgo")(sequelize, DataTypes, Model);
