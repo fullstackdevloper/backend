@@ -22,7 +22,10 @@ const connect = () => {
 
   const db = {};
   db.Sequelize = Sequelize;
+  
   db.sequelize = sequelize;
+  db.riskdf = require("../models/riskdf")(sequelize, DataTypes, Model);
+  // db.marketcoin = require("../models/marketcoin")(sequelize, DataTypes, Model);
   db.btc = require("../models/riskdfbtc")(sequelize, DataTypes, Model);
   db.ada = require("../models/riskdfada")(sequelize, DataTypes, Model);
   db.algo = require("../models/riskdfalgo")(sequelize, DataTypes, Model);
@@ -39,7 +42,7 @@ const connect = () => {
   db.ksm = require("../models/riskdfksm")(sequelize, DataTypes, Model);
   db.link = require("../models/riskdflink")(sequelize, DataTypes, Model);
   db.ltc = require("../models/riskdfltc")(sequelize, DataTypes, Model);
-  //db.matic = require("../models/riskdfmatic")(sequelize, DataTypes, Model);
+  db.matic = require("../models/riskdfmatic")(sequelize, DataTypes, Model);
   db.near = require("../models/riskdfnear")(sequelize, DataTypes, Model);
   db.one = require("../models/riskdfone")(sequelize, DataTypes, Model);
   db.qnt = require("../models/riskdfqnt")(sequelize, DataTypes, Model);
@@ -49,7 +52,7 @@ const connect = () => {
   db.vet = require("../models/riskdfvet")(sequelize, DataTypes, Model);
   db.xrp = require("../models/riskdfxrp")(sequelize, DataTypes, Model);
   db.xtz = require("../models/riskdfxtz")(sequelize, DataTypes, Model);
-  //db.zill = require("../models/riskdfzill")(sequelize, DataTypes, Model);
+  db.zil = require("../models/riskdfzil")(sequelize, DataTypes, Model);
 
   return db;
 };

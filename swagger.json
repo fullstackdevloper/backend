@@ -9,24 +9,23 @@
       "url": "https://opensource.org/licenses/MIT"
     }
   },
-  "host": "localhost:3001",
+  "host": "3.131.122.64:3001",
+  "host1":"3.131.122.64:3001",
   "basePath": "/",
-  "securityDefinitions": {
-    "Authorization": {
-      "type": "apiKey",
-      "name": "Authorization",
-      "scheme": "Bearer",
-      "in": "header"
-    }
-  },
+  
   "tags": [
     {
       "name": "Polarity Digital Api's"
     }
   ],
+  "schemes": [
+    "http",
+    "https"
+  ],
   "paths": {
     "/api/coin/historicalData": {
       "get": {
+    
         "tags": [
           "Coin Api's"
         ],
@@ -38,12 +37,48 @@
           {
             "name": "coin",
             "in": "query",
-            "required":true
+            "required": true,
+            "description":"possible coin value is one of them (btc,ada,algo,atom,avax,bnb,dot,egld,enj,eth,ftm,hbar,hnt,ksm,link,ltc,matic,near,one,qnt,sand,sol,theta,vet,xrp,xtz,zil)"
           },
           {
             "name": "metric",
+            "in": "query",
+            "description":"example: closeprice,udpim,udpil..........."
+          },
+          {
+            "name": "limit",
             "in": "query"
           },
+          {
+            "name": "dateFrom",
+            "in": "query",
+            "description":"please enter date like this format(2010-10-01)"
+          },
+          {
+            "name": "dateTo",
+            "in": "query",
+            "description":"please enter date like this format(2010-11-10)"
+
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Data loaded successfully"
+          }
+        }
+      }
+    },
+    "/api/getAllCoins": {
+      "get": {
+    
+        "tags": [
+          "Coin Api's"
+        ],
+        "description": "Get all coins data",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
           {
             "name": "limit",
             "in": "query"
