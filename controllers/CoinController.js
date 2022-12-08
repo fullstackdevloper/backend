@@ -242,6 +242,11 @@ exports.saveMarketCoins = [
 
       /**save data into marketcoin table code start*/
       saveMarketCoinDataIntoTable(data, db);
+
+      return apiResponse.successResponse(
+        res,
+        "Coin data fetch successfully from coingeko api!",
+      );
       /**save data into marketcoin table code end*/
     } catch (err) {
       console.log("errrrrrrrRR:", err);
