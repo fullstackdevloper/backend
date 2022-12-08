@@ -2,11 +2,12 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger.json");
-
+const cron = require('node-cron');
+const {saveMarketCoins} = require('./controllers/CoinController')
 require("dotenv").config();
 const cors = require("cors");
 
-const port = process.env.PORT || 3002;
+const port = process.env.PORT || 3001;
 const app = express();
 app.use(bodyParser.json());
 
@@ -29,6 +30,12 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// cron.schedule('* * * * *', () => {
+//   // saveMarketCoins(req,res).then((res)=>{
+//   //   console.log("Dddddddddddddggggggggooooo")
+//   // });
+//   console.log("vvvvvvvvvvvvvvvvvvvvvvvvvvvvv")
+// });
 app.listen(port, () => {
   console.log(`Server is running on port ${port}.`);
 });
