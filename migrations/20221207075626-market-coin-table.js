@@ -4,10 +4,8 @@ module.exports = {
   async up (queryInterface, Sequelize) {
     await queryInterface.createTable('marketcoin', 
     { 
-      id: {
+      coin_id: {
         type: Sequelize.STRING,
-        autoIncrement: false,
-        primaryKey: false
       },
       symbol:Sequelize.STRING,
       name:Sequelize.STRING,

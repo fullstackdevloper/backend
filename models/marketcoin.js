@@ -8,10 +8,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   marketcoin.init({
-    id: {
+    coin_id: {
         type: DataTypes.STRING,
-        autoIncrement: false,
-        primaryKey: false
       },
     symbol:DataTypes.STRING,
     name:DataTypes.STRING,

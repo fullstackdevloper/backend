@@ -190,6 +190,11 @@ exports.saveMarketCoins = [
       const response =  await fetch("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd", { method: 'get', headers: { 'Content-Type': 'application/json' } }
 			);
 			const data = await response.json();
+
+      /**save data into marketcoin table code start*/
+      saveMarketCoinDataIntoTable(data);
+      /**save data into marketcoin table code end*/
+
       console.log("dattttttt:",data)
     } catch (err) {
       console.log("errrrrrrrRR:", err)
@@ -200,3 +205,10 @@ exports.saveMarketCoins = [
     }
   },
 ];
+
+
+const saveMarketCoinDataIntoTable =(data)=>{
+  let newData ={
+    id:data.coin_id,
+  }
+}

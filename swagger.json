@@ -9,7 +9,7 @@
       "url": "https://opensource.org/licenses/MIT"
     }
   },
-  "host": "3.131.122.64:3001",
+  "host": "localhost:3001",
   "host1":"3.131.122.64:3001",
   "basePath": "/",
   
@@ -83,6 +83,22 @@
             "name": "limit",
             "in": "query"
           }
+        ],
+        "responses": {
+          "200": {
+            "description": "Data loaded successfully"
+          }
+        }
+      }
+    },
+    "/api/coins/saveMarkets": {
+      "post": {
+        "tags": [
+          "Coin Api's"
+        ],
+        "description": "Save Market  data",
+        "produces": [
+          "application/json"
         ],
         "responses": {
           "200": {
