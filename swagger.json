@@ -91,7 +91,7 @@
       }
     },
     "/api/coins/saveMarkets": {
-      "post": {
+      "get": {
         "tags": [
           "Coin Api's"
         ],
@@ -106,7 +106,6 @@
         }
       }
     },
-
     "/api/coins/markets":{
       "get": {
         "tags": [
@@ -123,6 +122,10 @@
           },
           {
             "name": "limit",
+            "in": "query"
+          },
+          {
+            "name":"risk_exist",
             "in": "query"
           }
         ],

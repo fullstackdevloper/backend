@@ -58,6 +58,7 @@ module.exports = (sequelize, DataTypes) => {
     volume:DataTypes.DOUBLE,
     mc:DataTypes.DOUBLE,
     cs:DataTypes.DOUBLE,
+    risk_exist:{type:DataTypes.INTEGER,defaultValue:0},
     // aa:DataTypes.STRING,
   },
    {
