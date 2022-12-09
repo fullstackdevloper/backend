@@ -331,7 +331,6 @@ const saveMarketCoinDataIntoTable = async (data, db) => {
 
   /**update coins from db comparing with coingeko api data coin*/
   updateCoins(newJsonData, dbData, db);
-  
   /**save new entries into db table */
   let result = newJsonData.filter(
     (o1) => !dbData.some((o2) => o1.symbol === o2.symbol)
@@ -389,7 +388,6 @@ const updateCoins = async (newJsonData, dbData, db) => {
     await db.marketcoin.update(ele, { where: { symbol: ele.symbol } });
   }
 };
-
 
 const riskData = async (allRiskCoinArr, db, newObj, res) => {
   if (allRiskCoinArr.includes(res.symbol)) {

@@ -10,7 +10,7 @@
     }
   },
   "host1": "localhost:3001",
-  "host":"3.131.122.64:3001",
+  "host": "3.131.122.64:3001",
   "basePath": "/",
   "tags": [
     {
@@ -24,7 +24,6 @@
   "paths": {
     "/api/coin/historicalData": {
       "get": {
-    
         "tags": [
           "Coin Api's"
         ],
@@ -37,12 +36,12 @@
             "name": "coin",
             "in": "query",
             "required": true,
-            "description":"possible coin value is one of them (btc,ada,algo,atom,avax,bnb,dot,egld,enj,eth,ftm,hbar,hnt,ksm,link,ltc,matic,near,one,qnt,sand,sol,theta,vet,xrp,xtz,zil)"
+            "description": "possible coin value is one of them (btc,ada,algo,atom,avax,bnb,dot,egld,enj,eth,ftm,hbar,hnt,ksm,link,ltc,matic,near,one,qnt,sand,sol,theta,vet,xrp,xtz,zil)"
           },
           {
             "name": "metric",
             "in": "query",
-            "description":"example: closeprice,udpim,udpil..........."
+            "description": "example: closeprice,udpim,udpil..........."
           },
           {
             "name": "limit",
@@ -51,13 +50,12 @@
           {
             "name": "dateFrom",
             "in": "query",
-            "description":"please enter date like this format(2010-10-01)"
+            "description": "please enter date like this format(2010-10-01)"
           },
           {
             "name": "dateTo",
             "in": "query",
-            "description":"please enter date like this format(2010-11-10)"
-
+            "description": "please enter date like this format(2010-11-10)"
           }
         ],
         "responses": {
@@ -69,7 +67,6 @@
     },
     "/api/getAllCoins": {
       "get": {
-    
         "tags": [
           "Coin Api's"
         ],
@@ -106,7 +103,7 @@
         }
       }
     },
-    "/api/coins/markets":{
+    "/api/coins/markets": {
       "get": {
         "tags": [
           "Coin Api's"
@@ -125,8 +122,140 @@
             "in": "query"
           },
           {
-            "name":"risk_exist",
+            "name": "risk_exist",
             "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Data loaded successfully"
+          }
+        }
+      }
+    },
+    "/api/charts/add": {
+      "post": {
+        "tags": [
+          "Chart Api's"
+        ],
+        "description": "Save chart data",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "chart",
+            "in": "body",
+            "description": "Save chart data",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "userId": {
+                  "type": "number",
+                  "example": 1
+                },
+                "name": {
+                  "type": "string",
+                  "example": "chartname"
+                },
+                "configuration": {
+                  "type": "object",
+                  "example": {
+                    "seriesName": "BTC Price",
+                    "color": "green",
+                    "yAxis": 1,
+                    "data": []
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Data loaded successfully"
+          }
+        }
+      }
+    },
+    "/api/charts/get": {
+      "get": {
+        "tags": [
+          "Chart Api's"
+        ],
+        "description": "Get chart data",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Data loaded successfully"
+          }
+        }
+      }
+    },
+    "/api/charts/update/{id}": {
+      "put": {
+        "tags": [
+          "Chart Api's"
+        ],
+        "description": "Update chart data",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name":"id",
+            "in":"path"
+          },
+          {
+            "name": "chart",
+            "in": "body",
+            "description": "Update chart data",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "userId": {
+                  "type": "number",
+                  "example": 1
+                },
+                "name":{
+                  "type": "string",
+                  "example": "chartname"
+                },
+                "configuration": {
+                  "type": "object",
+                  "example": {
+                    "seriesName": "BTC UDPI",
+                    "color": "blue",
+                    "yAxis": 1,
+                    "data": []
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Data loaded successfully"
+          }
+        }
+      }
+    },
+    "/api/charts/delete/{id}": {
+      "delete": {
+        "tags": [
+          "Chart Api's"
+        ],
+        "description": "Delete chart data",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name":"id",
+            "in":"path"
           }
         ],
         "responses": {
