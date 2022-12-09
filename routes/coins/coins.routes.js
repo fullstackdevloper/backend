@@ -10,6 +10,6 @@ module.exports = function (app) {
   });
   app.get("/api/coin/historicalData",CoinController.getCoins);
   app.get("/api/getAllCoins",CoinController.getAllCoins);
-  app.post("/api/coins/saveMarkets",CoinController.saveMarketCoins);
+  app.get("/api/coins/saveMarkets",CoinController.saveMarketCoins);
   app.get("/api/coins/markets",CoinController.getMarketCoins);
 };

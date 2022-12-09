@@ -3,7 +3,7 @@ const apiResponse = require("../helpers/apiResponse");
 const { connect } = require("../config/db.config");
 const fetch = (...args) =>
   import("node-fetch").then(({ default: fetch }) => fetch(...args));
-const { Op } = require("sequelize");
+const { Op, NUMBER } = require("sequelize");
 /**
  * add chart api.
  *
@@ -205,15 +205,19 @@ exports.getMarketCoins = [
   (req, res) => {
     db = connect();
     try {
-      let {limit,page} = req.query;
+      let query = {}
+      let { limit, page, risk_exist } = req.query;
       limit = limit ? limit : 50;
-      page = page?page:1
-      let offset= (Number(page)-1) * limit;
-      db.marketcoin.findAll({offset, limit,order:[['id','ASC']] }).then((data) => {
+      page = page ? page : 1
+      risk_exist = risk_exist ? Number(risk_exist) : 0
+      let offset = (Number(page) - 1) * limit;
+      console.log("risk_exist:", risk_exist)
+      query = risk_exist === 1 ? { where: { risk_exist: 1 }, offset, limit, order: [['id', 'ASC']] } : { offset, limit, order: [['id', 'ASC']] }
+      db.marketcoin.findAll(query).then((data) => {
         return apiResponse.successResponseWithData(
           res,
           "Data loaded successfully",
-          data
+          { count: data.length, data }
         );
       });
     } catch (err) {
@@ -235,14 +239,13 @@ exports.saveMarketCoins = [
     db = connect();
     try {
       const response = await fetch(
-        "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&per_page=250",
+        `${process.env.COINGEKO_API_URL}?vs_currency=usd&order=market_cap_desc&per_page=250&page=1&sparkline=true&price_change_percentage=1h%2C24h%2C7d%2C30d%2C1y`,
         { method: "get", headers: { "Content-Type": "application/json" } }
       );
       const data = await response.json();
-
+      console.log("datadatadata:",data)
       /**save data into marketcoin table code start*/
       saveMarketCoinDataIntoTable(data, db);
-
       return apiResponse.successResponse(
         res,
         "Coin data fetch successfully from coingeko api!",
@@ -260,7 +263,6 @@ exports.saveMarketCoins = [
 
 const saveMarketCoinDataIntoTable = async (data, db) => {
   let dbData = await db.marketcoin.findAll({ attributes: { exclude: "id" } });
-
   let allRiskCoinArr = [
     "btc",
     "ada",
@@ -291,7 +293,7 @@ const saveMarketCoinDataIntoTable = async (data, db) => {
     "zil",
   ];
   let newJsonData = [];
-  data.map(async(res) => {
+  data.map(async (res) => {
     /**check risk coin exist in db or not code start*/
     let newObj = {
       coin_id: res.id,
@@ -319,59 +321,52 @@ const saveMarketCoinDataIntoTable = async (data, db) => {
       atl_change_percentage: res.atl_change_percentage,
       atl_date: res.atl_date,
       roi: res.roi,
+      sparkline_in_7d:res.sparkline_in_7d,
       last_updated: res.last_updated,
     };
     newJsonData.push(newObj)
   })
-    /**check risk coin exist in db or not code start*/
-    if (newJsonData.length > 0) {
-      /**delete coins from db comparing with coingeko api data coin */
-      deleteCoins(newJsonData, dbData, db);
-  
-      /**update coins from db comparing with coingeko api data coin*/
-      updateCoins(newJsonData, dbData, db);
-  
-      /**save new entries into db table */
-      let result = newJsonData.filter(
-        (o1) => !dbData.some((o2) => o1.symbol === o2.symbol)
-      );
-  
-      console.log("resultresult:", result);
-      // return
-      db.marketcoin.bulkCreate(result)
-      let newObj1={}
-      await db.marketcoin.findAll({ attributes: { exclude: "id" } }).then((allCoins)=>{
-        allCoins.map((res)=>{
-          if (allRiskCoinArr.includes(res.symbol)){
-            db[res.symbol].findAll({
-              attributes: { exclude: "id" },
-              limit: 1,
-              order: [["closetime", "DESC"]],
-            }).then(async(coin) => {
-                newObj1.closetime = coin[0].closetime
-                newObj1.closeprice = coin[0].closeprice
-                newObj1.udpil = coin[0].udpil
-                newObj1.udpim = coin[0].udpim
-                newObj1.udpis = coin[0].udpis
-                newObj1.mbi = coin[0].mbi
-                newObj1.tci = coin[0].tci
-                newObj1.tcicv = coin[0].tcicv
-                newObj1.mdccv = coin[0].mdccv
-                newObj1.mdcdp = coin[0].mdcdp
-                newObj1.volume = coin[0].volume
-                newObj1.mc = coin[0].mc
-                newObj1.cs = coin[0].cs
-                await db.marketcoin.update(newObj1,{where:{symbol:res.symbol}})
-                console.log("update successfully risk metrics")
-              });
-          }
-        })
-       
-      });
-      console.log("create successfully");
-    }
-};
+  /**delete coins from db comparing with coingeko api data coin */
+  deleteCoins(newJsonData, dbData, db);
 
+  /**update coins from db comparing with coingeko api data coin*/
+  updateCoins(newJsonData, dbData, db);
+  
+  /**save new entries into db table */
+  let result = newJsonData.filter(
+    (o1) => !dbData.some((o2) => o1.symbol === o2.symbol)
+  );
+  db.marketcoin.bulkCreate(result)
+  let newObj1 = {}
+  await db.marketcoin.findAll({ attributes: { exclude: "id" } }).then((allCoins) => {
+    allCoins.map((res) => {
+      if (allRiskCoinArr.includes(res.symbol)) {
+        db[res.symbol].findAll({
+          attributes: { exclude: "id" },
+          limit: 1,
+          order: [["closetime", "DESC"]],
+        }).then(async (coin) => {
+          newObj1.closetime = coin[0].closetime
+          newObj1.closeprice = coin[0].closeprice
+          newObj1.udpil = coin[0].udpil
+          newObj1.udpim = coin[0].udpim
+          newObj1.udpis = coin[0].udpis
+          newObj1.mbi = coin[0].mbi
+          newObj1.tci = coin[0].tci
+          newObj1.tcicv = coin[0].tcicv
+          newObj1.mdccv = coin[0].mdccv
+          newObj1.mdcdp = coin[0].mdcdp
+          newObj1.volume = coin[0].volume
+          newObj1.mc = coin[0].mc
+          newObj1.cs = coin[0].cs
+          newObj1.risk_exist = 1
+          await db.marketcoin.update(newObj1, { where: { symbol: res.symbol } })
+          console.log("update successfully risk metrics")
+        });
+      }
+    })
+  });
+};
 /**delete coin function start */
 const deleteCoins = async (newJsonData, dbData, db) => {
   let result1 = await dbData.filter(
@@ -388,39 +383,38 @@ const deleteCoins = async (newJsonData, dbData, db) => {
 /**update coin function start */
 const updateCoins = async (newJsonData, dbData, db) => {
   let newJson = await newJsonData.filter((o1) =>
-    dbData.some((o2) => o1.symbol === o2.symbol)
+  dbData.some((o2) => o1.symbol === o2.symbol)
   );
   for (let ele of newJson) {
     await db.marketcoin.update(ele, { where: { symbol: ele.symbol } });
   }
-  console.log("update successfully");
 };
 
 
-const riskData = async (allRiskCoinArr,db,newObj,res)=>{
-  if (allRiskCoinArr.includes(res.symbol)){
+const riskData = async (allRiskCoinArr, db, newObj, res) => {
+  if (allRiskCoinArr.includes(res.symbol)) {
     db[res.symbol].findAll({
       attributes: { exclude: "id" },
       limit: 1,
       order: [["closetime", "DESC"]],
     }).then((coin) => {
-        newObj.closetime = coin[0].closetime
-        newObj.closeprice = coin[0].closeprice
-        newObj.udpil = coin[0].udpil
-        newObj.udpim = coin[0].udpim
-        newObj.udpis = coin[0].udpis
-        newObj.mbi = coin[0].mbi
-        newObj.tci = coin[0].tci
-        newObj.tcicv = coin[0].tcicv
-        newObj.mdccv = coin[0].mdccv
-        newObj.mdcdp = coin[0].mdcdp
-        newObj.volume = coin[0].volume
-        newObj.mc = coin[0].mc
-        newObj.cs = coin[0].cs
-        return newObj;
-      });
+      newObj.closetime = coin[0].closetime
+      newObj.closeprice = coin[0].closeprice
+      newObj.udpil = coin[0].udpil
+      newObj.udpim = coin[0].udpim
+      newObj.udpis = coin[0].udpis
+      newObj.mbi = coin[0].mbi
+      newObj.tci = coin[0].tci
+      newObj.tcicv = coin[0].tcicv
+      newObj.mdccv = coin[0].mdccv
+      newObj.mdcdp = coin[0].mdcdp
+      newObj.volume = coin[0].volume
+      newObj.mc = coin[0].mc
+      newObj.cs = coin[0].cs
+      return newObj;
+    });
   }
-  else{
+  else {
     return 0;
   }
 }
