@@ -239,10 +239,11 @@ exports.saveMarketCoins = [
     db = connect();
     try {
       const response = await fetch(
-        `${process.env.COINGEKO_API_URL}?vs_currency=usd&per_page=250`,
+        `${process.env.COINGEKO_API_URL}?vs_currency=usd&order=market_cap_desc&per_page=250&page=1&sparkline=true&price_change_percentage=1h%2C24h%2C7d%2C30d%2C1y`,
         { method: "get", headers: { "Content-Type": "application/json" } }
       );
       const data = await response.json();
+      console.log("datadatadata:",data)
       /**save data into marketcoin table code start*/
       saveMarketCoinDataIntoTable(data, db);
       return apiResponse.successResponse(
@@ -320,6 +321,7 @@ const saveMarketCoinDataIntoTable = async (data, db) => {
       atl_change_percentage: res.atl_change_percentage,
       atl_date: res.atl_date,
       roi: res.roi,
+      sparkline_in_7d:res.sparkline_in_7d,
       last_updated: res.last_updated,
     };
     newJsonData.push(newObj)
@@ -329,7 +331,7 @@ const saveMarketCoinDataIntoTable = async (data, db) => {
 
   /**update coins from db comparing with coingeko api data coin*/
   updateCoins(newJsonData, dbData, db);
-
+  
   /**save new entries into db table */
   let result = newJsonData.filter(
     (o1) => !dbData.some((o2) => o1.symbol === o2.symbol)
@@ -381,12 +383,11 @@ const deleteCoins = async (newJsonData, dbData, db) => {
 /**update coin function start */
 const updateCoins = async (newJsonData, dbData, db) => {
   let newJson = await newJsonData.filter((o1) =>
-    dbData.some((o2) => o1.symbol === o2.symbol)
+  dbData.some((o2) => o1.symbol === o2.symbol)
   );
   for (let ele of newJson) {
     await db.marketcoin.update(ele, { where: { symbol: ele.symbol } });
   }
-  console.log("update successfully");
 };
 
 
