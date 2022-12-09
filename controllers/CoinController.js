@@ -239,10 +239,8 @@ exports.saveMarketCoins = [
         { method: "get", headers: { "Content-Type": "application/json" } }
       );
       const data = await response.json();
-
       /**save data into marketcoin table code start*/
       saveMarketCoinDataIntoTable(data, db);
-
       return apiResponse.successResponse(
         res,
         "Coin data fetch successfully from coingeko api!",
