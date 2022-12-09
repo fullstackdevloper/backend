@@ -9,5 +9,9 @@ module.exports = function (app) {
     next();
   });
 
-  app.post("/api/charts/add-new", ChartController.addChart);
+  app.post("/api/charts/add", ChartController.addChart);
+  app.get("/api/charts/get", ChartController.getChart);
+  app.put("/api/charts/update/:id", ChartController.updateChart);
+  app.delete("/api/charts/delete/:id", ChartController.deleteChart);
+
 };

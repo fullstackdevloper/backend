@@ -22,8 +22,8 @@ const connect = () => {
 
   const db = {};
   db.Sequelize = Sequelize;
-  
   db.sequelize = sequelize;
+  db.chart = require("../models/chart")(sequelize, DataTypes, Model);
   db.riskdf = require("../models/riskdf")(sequelize, DataTypes, Model);
   db.marketcoin = require("../models/marketcoin")(sequelize, DataTypes, Model);
   db.btc = require("../models/riskdfbtc")(sequelize, DataTypes, Model);
