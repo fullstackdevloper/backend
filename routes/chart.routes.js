@@ -11,6 +11,7 @@ module.exports = function (app) {
 
   app.post("/api/charts/add", ChartController.addChart);
   app.get("/api/charts/get", ChartController.getChart);
+  app.get("/api/chart/:id", ChartController.getSingleChart);
   app.put("/api/charts/update/:id", ChartController.updateChart);
   app.delete("/api/charts/delete/:id", ChartController.deleteChart);
 
