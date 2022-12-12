@@ -9,8 +9,8 @@
       "url": "https://opensource.org/licenses/MIT"
     }
   },
-  "host1": "localhost:3001",
-  "host": "3.131.122.64:3001",
+  "host": "localhost:3001",
+  "host1": "3.131.122.64:3001",
   "basePath": "/",
   "tags": [
     {
@@ -194,6 +194,27 @@
         }
       }
     },
+    "/api/chart/{id}": {
+      "get": {
+        "tags": [
+          "Chart Api's"
+        ],
+        "description": "Get chart data",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name":"id",
+            "in":"path"
+          }],
+        "responses": {
+          "200": {
+            "description": "Data loaded successfully"
+          }
+        }
+      }
+    },
     "/api/charts/update/{id}": {
       "put": {
         "tags": [
@@ -203,6 +224,7 @@
         "produces": [
           "application/json"
         ],
+       
         "parameters": [
           {
             "name":"id",
