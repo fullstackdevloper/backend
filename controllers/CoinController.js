@@ -261,6 +261,53 @@ exports.saveMarketCoins = [
   },
 ];
 
+exports.getExcelData =[
+  async (req, res) => {
+    db = connect();
+    try {
+      const fs = require("fs");
+      const csv = require("fast-csv")
+      let data=[]
+      fs.createReadStream("./helpers/excelFile.csv")
+        .pipe(csv.parse({ headers: true }))
+        .on("data", row =>  {
+          data.push(row)
+          console.log("rowsssssssssSS:",row)
+          let closetime=''
+          if(row.closetime !== ''){
+            closetime = new Date(row.closetime).getFullYear() +
+            "-" +
+            `${new Date(row.closetime).getMonth() + 1}` +
+            "-" +
+            `${new Date(row.closetime).getDate()}`;
+          }
+          let body ={
+            volume:row.volume===''?0:row.volume,
+            mc:row.mc === ''?0:row.mc,
+            cs:row.cs === ''?0:row.cs
+          }
+          console.log("body:",body,closetime)
+          db.btc.update(body,{where:{closetime:{[Op.eq]:closetime}}}).then((dataUpdate)=>{
+          })
+          data.push(row)
+        })
+        console.log("dataaaaaaaAAA",data)
+      return apiResponse.successResponseWithData(
+        res,
+        "Coin data fetch successfully from coingeko api!",
+        {data,count:data.length}
+      );
+      /**save data into marketcoin table code end*/
+    } catch (err) {
+      console.log("errrrrrrrRR:", err);
+      return apiResponse.ErrorResponse(
+        res,
+        err.message || "INTERNAL SERVER ERROR"
+      );
+    }
+  },
+];
+
 const saveMarketCoinDataIntoTable = async (data, db) => {
   let dbData = await db.marketcoin.findAll({ attributes: { exclude: "id" } });
   let allRiskCoinArr = [
@@ -323,6 +370,11 @@ const saveMarketCoinDataIntoTable = async (data, db) => {
       roi: res.roi,
       sparkline_in_7d:res.sparkline_in_7d,
       last_updated: res.last_updated,
+      price_change_percentage_1h_in_currency:res.price_change_percentage_1h_in_currency,
+      price_change_percentage_1y_in_currency:res.price_change_percentage_1y_in_currency,
+      price_change_percentage_24h_in_currency:res.price_change_percentage_24h_in_currency,
+      price_change_percentage_30d_in_currency:res.price_change_percentage_30d_in_currency,
+      price_change_percentage_7d_in_currency:res.price_change_percentage_7d_in_currency,
     };
     newJsonData.push(newObj)
   })
@@ -366,6 +418,7 @@ const saveMarketCoinDataIntoTable = async (data, db) => {
     })
   });
 };
+
 /**delete coin function start */
 const deleteCoins = async (newJsonData, dbData, db) => {
   let result1 = await dbData.filter(
