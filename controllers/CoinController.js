@@ -239,7 +239,7 @@ exports.saveMarketCoins = [
     db = connect();
     try {
       const response = await fetch(
-        `${process.env.COINGEKO_API_URL}?vs_currency=usd&order=market_cap_desc&per_page=2&page=1&sparkline=true&price_change_percentage=1h%2C24h%2C7d%2C30d%2C1y`,
+        `${process.env.COINGEKO_API_URL}?vs_currency=usd&order=market_cap_desc&per_page=250&page=1&sparkline=true&price_change_percentage=1h%2C24h%2C7d%2C30d%2C1y`,
         { method: "get", headers: { "Content-Type": "application/json" } }
       );
       const data = await response.json();
