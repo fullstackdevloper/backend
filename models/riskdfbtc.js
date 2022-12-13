@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   riskdfbtc.init({
-    closetime:DataTypes.DATE,
+    closetime:DataTypes.DATEONLY,
     closeprice:DataTypes.STRING,
     udpil:DataTypes.DOUBLE,
     udpim:DataTypes.DOUBLE,
