@@ -212,7 +212,7 @@ exports.getMarketCoins = [
       risk_exist = risk_exist ? Number(risk_exist) : 0
       let offset = (Number(page) - 1) * limit;
       console.log("risk_exist:", risk_exist)
-      query = risk_exist === 1 ? { where: { risk_exist: 1 }, offset, limit, order: [['id', 'ASC']] } : { offset, limit, order: [['id', 'ASC']] }
+      query = risk_exist === 1 ? { where: { risk_exist: 1 }, offset, limit, order: [['id', 'ASC']] } : { offset, limit, order: [['market_cap_rank', 'ASC']] }
       db.marketcoin.findAll(query).then((data) => {
         return apiResponse.successResponseWithData(
           res,
@@ -426,7 +426,7 @@ const deleteCoins = async (newJsonData, dbData, db) => {
   );
   let coinId = [];
   for (let ele of result1) {
-    coinId.push(ele.id);
+    coinId.push(ele.coin_id);
   }
   await db.marketcoin.destroy({ where: { coin_id: coinId } });
   console.log("deleted successfully");
@@ -437,7 +437,7 @@ const updateCoins = async (newJsonData, dbData, db) => {
   let newJson = await newJsonData.filter((o1) =>
   dbData.some((o2) => o1.symbol === o2.symbol)
   );
-  for (let ele of newJson) {
+  for (let ele of newJson){
     await db.marketcoin.update(ele, { where: { symbol: ele.symbol } });
   }
 };
