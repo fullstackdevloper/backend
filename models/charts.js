@@ -10,12 +10,15 @@ module.exports = (sequelize, DataTypes) => {
   chart.init({
     userId: DataTypes.INTEGER,
     name:DataTypes.STRING,
-    configuration: DataTypes.JSON
+    coin:DataTypes.STRING,
+    metric:DataTypes.STRING,
+    current_title:DataTypes.STRING,
+    configuration: DataTypes.JSON,
   }, {
     sequelize,
-    modelName: 'chart',
+    modelName: 'charts',
     timestamps: false,
-    tableName: 'chart',
+    tableName: 'charts',
   }
   );
   return chart;

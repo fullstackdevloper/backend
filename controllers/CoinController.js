@@ -122,7 +122,7 @@ exports.getCoins = [
         );
       }
       if (metric !== undefined) {
-        query = [metric];
+        query = ['closetime',metric];
       }
       limit = limit ? limit : 250;
       if (dateFrom) {
@@ -145,7 +145,6 @@ exports.getCoins = [
       if (dateFrom && dateTo) {
         dateQuery = { closetime: { [Op.between]: [dateFrom, dateTo] } };
       }
-      // console.log("dattttt:",dateFrom,dateTo)
       db[coin]
         .findAll({ attributes: query, limit, where: dateQuery })
         .then((data) => {
@@ -212,7 +211,7 @@ exports.getMarketCoins = [
       risk_exist = risk_exist ? Number(risk_exist) : 0
       let offset = (Number(page) - 1) * limit;
       console.log("risk_exist:", risk_exist)
-      query = risk_exist === 1 ? { where: { risk_exist: 1 }, offset, limit, order: [['id', 'ASC']] } : { offset, limit, order: [['id', 'ASC']] }
+      query = risk_exist === 1 ? { where: { risk_exist: 1 }, offset, limit, order: [['id', 'ASC']] } : { offset, limit, order: [['market_cap_rank', 'ASC']] }
       db.marketcoin.findAll(query).then((data) => {
         return apiResponse.successResponseWithData(
           res,
@@ -243,7 +242,7 @@ exports.saveMarketCoins = [
         { method: "get", headers: { "Content-Type": "application/json" } }
       );
       const data = await response.json();
-      console.log("datadatadata:",data)
+      console.log("datadatadata:", data)
       /**save data into marketcoin table code start*/
       saveMarketCoinDataIntoTable(data, db);
       return apiResponse.successResponse(
@@ -261,41 +260,38 @@ exports.saveMarketCoins = [
   },
 ];
 
-exports.getExcelData =[
+exports.getExcelData = [
   async (req, res) => {
     db = connect();
     try {
       const fs = require("fs");
       const csv = require("fast-csv")
-      let data=[]
+      let data = []
       fs.createReadStream("./helpers/excelFile.csv")
         .pipe(csv.parse({ headers: true }))
-        .on("data", row =>  {
+        .on("data", row => {
           data.push(row)
-          console.log("rowsssssssssSS:",row)
-          let closetime=''
-          if(row.closetime !== ''){
+          let closetime = ''
+          if (row.closetime !== '') {
             closetime = new Date(row.closetime).getFullYear() +
-            "-" +
-            `${new Date(row.closetime).getMonth() + 1}` +
-            "-" +
-            `${new Date(row.closetime).getDate()}`;
+              "-" +
+              `${new Date(row.closetime).getMonth() + 1}` +
+              "-" +
+              `${new Date(row.closetime).getDate()}`;
           }
-          let body ={
-            volume:row.volume===''?0:row.volume,
-            mc:row.mc === ''?0:row.mc,
-            cs:row.cs === ''?0:row.cs
+          let body = {
+            volume: row.volume === '' ? 0 : row.volume,
+            mc: row.mc === '' ? 0 : row.mc,
+            cs: row.cs === '' ? 0 : row.cs
           }
-          console.log("body:",body,closetime)
-          db.btc.update(body,{where:{closetime:{[Op.eq]:closetime}}}).then((dataUpdate)=>{
+          db.btc.update(body, { where: { closetime: { [Op.eq]: closetime } } }).then((dataUpdate) => {
           })
           data.push(row)
         })
-        console.log("dataaaaaaaAAA",data)
       return apiResponse.successResponseWithData(
         res,
         "Coin data fetch successfully from coingeko api!",
-        {data,count:data.length}
+        { data, count: data.length }
       );
       /**save data into marketcoin table code end*/
     } catch (err) {
@@ -368,13 +364,13 @@ const saveMarketCoinDataIntoTable = async (data, db) => {
       atl_change_percentage: res.atl_change_percentage,
       atl_date: res.atl_date,
       roi: res.roi,
-      sparkline_in_7d:res.sparkline_in_7d,
+      sparkline_in_7d: res.sparkline_in_7d,
       last_updated: res.last_updated,
-      price_change_percentage_1h_in_currency:res.price_change_percentage_1h_in_currency,
-      price_change_percentage_1y_in_currency:res.price_change_percentage_1y_in_currency,
-      price_change_percentage_24h_in_currency:res.price_change_percentage_24h_in_currency,
-      price_change_percentage_30d_in_currency:res.price_change_percentage_30d_in_currency,
-      price_change_percentage_7d_in_currency:res.price_change_percentage_7d_in_currency,
+      price_change_percentage_1h_in_currency: res.price_change_percentage_1h_in_currency,
+      price_change_percentage_1y_in_currency: res.price_change_percentage_1y_in_currency,
+      price_change_percentage_24h_in_currency: res.price_change_percentage_24h_in_currency,
+      price_change_percentage_30d_in_currency: res.price_change_percentage_30d_in_currency,
+      price_change_percentage_7d_in_currency: res.price_change_percentage_7d_in_currency,
     };
     newJsonData.push(newObj)
   })
@@ -426,7 +422,7 @@ const deleteCoins = async (newJsonData, dbData, db) => {
   );
   let coinId = [];
   for (let ele of result1) {
-    coinId.push(ele.id);
+    coinId.push(ele.coin_id);
   }
   await db.marketcoin.destroy({ where: { coin_id: coinId } });
   console.log("deleted successfully");
@@ -435,7 +431,7 @@ const deleteCoins = async (newJsonData, dbData, db) => {
 /**update coin function start */
 const updateCoins = async (newJsonData, dbData, db) => {
   let newJson = await newJsonData.filter((o1) =>
-  dbData.some((o2) => o1.symbol === o2.symbol)
+    dbData.some((o2) => o1.symbol === o2.symbol)
   );
   for (let ele of newJson) {
     await db.marketcoin.update(ele, { where: { symbol: ele.symbol } });
