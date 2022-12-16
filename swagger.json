@@ -9,8 +9,8 @@
       "url": "https://opensource.org/licenses/MIT"
     }
   },
-  "host1": "localhost:3001",
-  "host": "api.polaritydigital.io",
+  "host": "localhost:3001",
+  "host1": "api.polaritydigital.io",
   "basePath": "/",
   "tags": [
     {
