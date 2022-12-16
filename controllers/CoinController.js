@@ -51,6 +51,7 @@ exports.getCoins = [
         "udpil",
         "udpil",
         "udpis",
+        "udpim",
         "mbi",
         "tci",
         "tcicv",
@@ -118,7 +119,7 @@ exports.getCoins = [
       if (metric && !metrics.includes(metric)) {
         return apiResponse.notFoundResponse(
           res,
-          "Possible value of metric is one of ('closeprice','udpil','udpis','mbi','tci','tcicv','mdccv','mdcdp','volume','mc','cs)!"
+          "Possible value of metric is one of ('closeprice','udpil','udpis','udpim'','mbi','tci','tcicv','mdccv','mdcdp','volume','mc','cs)!"
         );
       }
       if (metric !== undefined) {
