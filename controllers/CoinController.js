@@ -126,7 +126,7 @@ exports.getCoins = [
       if (metric !== undefined) {
         query = ['closetime',metric];
       }
-      limit = limit ? limit : 250;
+      // limit = limit ? limit : 250;
       if (dateFrom) {
         dateFrom =
           new Date(dateFrom).getFullYear() +
@@ -147,8 +147,9 @@ exports.getCoins = [
       if (dateFrom && dateTo) {
         dateQuery = { closetime: { [Op.between]: [dateFrom, dateTo] } };
       }
-      db[coin]
-        .findAll({ attributes: query, limit, where: dateQuery })
+      if(limit){
+        db[coin]
+        .findAll({ attributes: query, limit, where: dateQuery, order: [["closetime", "ASC"]] })
         .then((data) => {
           return apiResponse.successResponseWithData(
             res,
@@ -156,6 +157,18 @@ exports.getCoins = [
             data
           );
         });
+      }else{
+        db[coin]
+        .findAll({ attributes: query,where: dateQuery, order: [["closetime", "ASC"]] })
+        .then((data) => {
+          return apiResponse.successResponseWithData(
+            res,
+            "Data loaded successfully",
+            data
+          );
+        });
+      }
+      
     } catch (err) {
       console.log("errrrrrrrRR:", err);
       return apiResponse.ErrorResponse(
