@@ -124,6 +124,10 @@
           {
             "name": "risk_exist",
             "in": "query"
+          },
+          {
+            "name":"category",
+            "in":"query"
           }
         ],
         "responses": {

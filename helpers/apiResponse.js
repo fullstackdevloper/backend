@@ -24,7 +24,6 @@ exports.ErrorResponse = function (res, msg) {
 };
 
 exports.notFoundResponse = function (res, msg) {
-  console.log("dddddddddddddddddddddd")
   var data = {
     status: 0,
     message: msg,
