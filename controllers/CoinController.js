@@ -124,7 +124,7 @@ exports.getCoins = [
         );
       }
       if (metric !== undefined) {
-        query = ['closetime',metric];
+        query = ['closetime', metric];
       }
       // limit = limit ? limit : 250;
       if (dateFrom) {
@@ -147,30 +147,29 @@ exports.getCoins = [
       if (dateFrom && dateTo) {
         dateQuery = { closetime: { [Op.between]: [dateFrom, dateTo] } };
       }
-      if(limit){
+      if (limit) {
         db[coin]
-        .findAll({ attributes: query, limit, where: dateQuery, order: [["closetime", "ASC"]] })
-        .then((data) => {
-          return apiResponse.successResponseWithData(
-            res,
-            "Data loaded successfully",
-            data
-          );
-        });
-      }else{
+          .findAll({ attributes: query, limit, where: dateQuery, order: [["closetime", "ASC"]] })
+          .then((data) => {
+            return apiResponse.successResponseWithData(
+              res,
+              "Data loaded successfully",
+              data
+            );
+          });
+      } else {
         db[coin]
-        .findAll({ attributes: query,where: dateQuery, order: [["closetime", "ASC"]] })
-        .then((data) => {
-          return apiResponse.successResponseWithData(
-            res,
-            "Data loaded successfully",
-            data
-          );
-        });
+          .findAll({ attributes: query, where: dateQuery, order: [["closetime", "ASC"]] })
+          .then((data) => {
+            return apiResponse.successResponseWithData(
+              res,
+              "Data loaded successfully",
+              data
+            );
+          });
       }
-      
+
     } catch (err) {
-      console.log("errrrrrrrRR:", err);
       return apiResponse.ErrorResponse(
         res,
         err.message || "INTERNAL SERVER ERROR"
@@ -216,26 +215,47 @@ exports.getMarketCoins = [
     .isLength({ min: 1 })
     .trim()
     .withMessage("Data must be specified."),
-  (req, res) => {
+  async (req, res) => {
     db = connect();
     try {
       let query = {}
-      let { limit, page, risk_exist } = req.query;
+      let { limit, page, risk_exist, category } = req.query;
       limit = limit ? limit : 50;
       page = page ? page : 1
       risk_exist = risk_exist ? Number(risk_exist) : 0
       let offset = (Number(page) - 1) * limit;
-      console.log("risk_exist:", risk_exist)
       query = risk_exist === 1 ? { where: { risk_exist: 1 }, offset, limit, order: [['id', 'ASC']] } : { offset, limit, order: [['market_cap_rank', 'ASC']] }
-      db.marketcoin.findAll(query).then((data) => {
-        return apiResponse.successResponseWithData(
-          res,
-          "Data loaded successfully",
-          { count: data.length, data }
+
+
+      let data = await db.marketcoin.findAll(query)
+      let categoryData;
+      if (category) {
+        const response = await fetch(
+          `${process.env.COINGEKO_API_URL}?vs_currency=usd&category=${category}&order=market_cap_desc&per_page=${limit}&page=${page}&sparkline=true&price_change_percentage=1h%2C24h%2C7d%2C30d%2C1y`,
+          { method: "get", headers: { "Content-Type": "application/json" } }
         );
-      });
+        categoryData = await response.json();
+        let coins = categoryData.map((coin, i) => {
+          return coin.symbol
+        })
+        var result = data.filter(function (o1) {
+          // filter out (!) items in result2
+
+          return coins.some(function (o2) {
+            return o1.symbol === o2;          // assumes unique id
+          });
+
+        })
+        data = result
+      }
+      // await db.marketcoin.findAll(query).then((data) => {
+      return apiResponse.successResponseWithData(
+        res,
+        "Data loaded successfully",
+        { count: data.length, data }
+      );
+      // });
     } catch (err) {
-      console.log("errrrrrrrRR:", err);
       return apiResponse.ErrorResponse(
         res,
         err.message || "INTERNAL SERVER ERROR"
@@ -257,7 +277,6 @@ exports.saveMarketCoins = [
         { method: "get", headers: { "Content-Type": "application/json" } }
       );
       const data = await response.json();
-      console.log("datadatadata:", data)
       /**save data into marketcoin table code start*/
       saveMarketCoinDataIntoTable(data, db);
       return apiResponse.successResponse(
@@ -266,7 +285,6 @@ exports.saveMarketCoins = [
       );
       /**save data into marketcoin table code end*/
     } catch (err) {
-      console.log("errrrrrrrRR:", err);
       return apiResponse.ErrorResponse(
         res,
         err.message || "INTERNAL SERVER ERROR"
@@ -310,7 +328,6 @@ exports.getExcelData = [
       );
       /**save data into marketcoin table code end*/
     } catch (err) {
-      console.log("errrrrrrrRR:", err);
       return apiResponse.ErrorResponse(
         res,
         err.message || "INTERNAL SERVER ERROR"
@@ -423,7 +440,6 @@ const saveMarketCoinDataIntoTable = async (data, db) => {
           newObj1.cs = coin[0].cs
           newObj1.risk_exist = 1
           await db.marketcoin.update(newObj1, { where: { symbol: res.symbol } })
-          console.log("update successfully risk metrics")
         });
       }
     })
@@ -440,7 +456,6 @@ const deleteCoins = async (newJsonData, dbData, db) => {
     coinId.push(ele.coin_id);
   }
   await db.marketcoin.destroy({ where: { coin_id: coinId } });
-  console.log("deleted successfully");
 };
 
 /**update coin function start */
