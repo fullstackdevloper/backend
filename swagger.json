@@ -137,6 +137,51 @@
         }
       }
     },
+    "/api/media/saveVideos": {
+      
+      "get": {
+        "tags": [
+          "Media Api's"
+        ],
+        "description": "Save Youtube Videos",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name":"channelId",
+            "in":"query",
+            "description":"possible value of channel id is one of these ['UC_bG7yHgT_xOUKvI2Hvo6Vg', 'UCzECtg05OBc2sE1KsRnHK7g']"
+          }],
+        "responses": {
+          "200": {
+            "description": "Videos save successfully!"
+          }
+        }
+      }
+    },
+    "/api/media/getVideos": {
+      "get": {
+        "tags": [
+          "Media Api's"
+        ],
+        "description": "Get Youtube Videos",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name":"channelId",
+            "in":"query",
+            "description":"possible value of channel id is one of these ['UC_bG7yHgT_xOUKvI2Hvo6Vg', 'UCzECtg05OBc2sE1KsRnHK7g']"
+          }],
+        "responses": {
+          "200": {
+            "description": "Videos get successfully!"
+          }
+        }
+      }
+    },
     "/api/charts/add": {
       "post": {
         "tags": [

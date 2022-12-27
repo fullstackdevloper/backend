@@ -13,4 +13,7 @@ module.exports = function (app) {
   app.get("/api/coins/saveMarkets",CoinController.saveMarketCoins);
   app.get("/api/coins/markets",CoinController.getMarketCoins);
   app.get("/api/coins/getEXcelData",CoinController.getExcelData);
+  app.get("/api/media/saveVideos",CoinController.saveYoutubeVideos);
+  app.get("/api/media/getVideos",CoinController.getYoutubeVideos);
+
 };

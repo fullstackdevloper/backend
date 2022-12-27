@@ -23,6 +23,7 @@ const connect = () => {
   const db = {};
   db.Sequelize = Sequelize;
   db.sequelize = sequelize;
+  db.youtubeVideos = require("../models/youtubevideos")(sequelize, DataTypes, Model);
   db.chart = require("../models/charts")(sequelize, DataTypes, Model);
   db.riskdf = require("../models/riskdf")(sequelize, DataTypes, Model);
   db.marketcoin = require("../models/marketcoin")(sequelize, DataTypes, Model);

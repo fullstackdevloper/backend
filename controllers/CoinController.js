@@ -235,6 +235,7 @@ exports.getMarketCoins = [
           { method: "get", headers: { "Content-Type": "application/json" } }
         );
         categoryData = await response.json();
+        console.log("categoryDatacategoryData:", categoryData)
         let coins = categoryData.map((coin, i) => {
           return coin.symbol
         })
@@ -335,6 +336,148 @@ exports.getExcelData = [
     }
   },
 ];
+
+exports.saveYoutubeVideos = [
+  body("data")
+    .isLength({ min: 1 })
+    .trim()
+    .withMessage("Data must be specified."),
+  async (req, res) => {
+    let { channelId } = req.query;
+    db = connect();
+    try {
+      let key = 'AIzaSyBb0BH0GbCl-xoVVcdashHubCjyk2nh8Jw'
+      // let channelId ='UC_bG7yHgT_xOUKvI2Hvo6Vg', UCzECtg05OBc2sE1KsRnHK7g
+      let part = 'snippet,id'
+      let order = 'date'
+      let maxResults = 20
+      const response = await fetch(
+        `https://www.googleapis.com/youtube/v3/search?key=${key}&channelId=${channelId}&part=${part}&order=${order}&maxResults=${maxResults}`,
+        { method: "get", headers: { "Content-Type": "application/json" } }
+      );
+      const data = await response.json();
+
+      /**save data into marketcoin table code start*/
+      saveVideosData(data.items, db, channelId);
+      return apiResponse.successResponseWithData(
+        res,
+        "Coin data fetch successfully from coingeko api!",
+        data
+      );
+      /**save data into marketcoin table code end*/
+    } catch (err) {
+      return apiResponse.ErrorResponse(
+        res,
+        err.message || "INTERNAL SERVER ERROR"
+      );
+    }
+  },
+];
+
+exports.getYoutubeVideos = [
+  body("data")
+    .isLength({ min: 1 })
+    .trim()
+    .withMessage("Data must be specified."),
+  (req, res) => {
+    db = connect();
+    try {
+      if(!req.query.channelId){
+        return apiResponse.notFoundResponse(
+          res,
+          "Channel id is required!"
+        )
+      }
+      db.youtubeVideos
+        .findOne({  
+          where: { channelId: req.query.channelId }
+        }).then((data => {
+          if (!data) {
+            return apiResponse.notFoundResponse(
+              res,
+              "Channel id is not found!"
+            )
+          }
+        }))
+      db.youtubeVideos
+        .findAll({
+          attributes: { exclude: ["id"] }, where: { channelId: req.query.channelId }, order: [["id", "ASC"]],
+        })
+        .then((data) => {
+          return apiResponse.successResponseWithData(
+            res,
+            "Data loaded successfully",
+            { count: data.length, items: data }
+          );
+        });
+    } catch (err) {
+      return apiResponse.ErrorResponse(
+        res,
+        err.message || "INTERNAL SERVER ERROR"
+      );
+    }
+  },
+];
+
+const saveVideosData = async (data, db, channelId) => {
+  let dbData = await db.youtubeVideos.findAll({ where: { channelId } });
+
+  let newJsonData = [];
+  data.map(async (res) => {
+    /**check risk coin exist in db or not code start*/
+    let newObj = {
+      video_id: res.id.videoId,
+      kind: res.kind,
+      etag: res.etag,
+      publishedAt: res.snippet.publishedAt,
+      channelId: res.snippet.channelId,
+      title: res.snippet.title,
+      description: res.snippet.description,
+      thumbnails_url: res.snippet.thumbnails.medium.url,
+      thumbnails_width: res.snippet.thumbnails.medium.width,
+      thumbnails_height: res.snippet.thumbnails.medium.height,
+      channelTitle: res.snippet.channelTitle,
+      liveBroadcastContent: res.snippet.liveBroadcastContent,
+      publishTime: res.snippet.publishTime,
+    };
+    newJsonData.push(newObj)
+  })
+  // console.log("newJsonDatanewJsonData:",newJsonData, newJsonData.length)
+  /**delete coins from db comparing with coingeko api data coin */
+  deleteVideos(newJsonData, dbData, db);
+
+  // /**update coins from db comparing with coingeko api data coin*/
+  updateVideos(newJsonData, dbData, db);
+  // /**save new entries into db table */
+  let result = newJsonData.filter(
+    (o1) => !dbData.some((o2) => o1.video_id === o2.video_id)
+  );
+  // console.log("resultresult;",result)
+  db.youtubeVideos.bulkCreate(result)
+}
+
+const deleteVideos = async (newJsonData, dbData, db) => {
+  let result1 = await dbData.filter(
+    (o1) => !newJsonData.some((o2) => o1.video_id === o2.video_id)
+  );
+  let videoId = [];
+  for (let ele of result1) {
+    videoId.push(ele.video_id);
+  }
+  console.log("videoId:", videoId)
+  await db.youtubeVideos.destroy({ where: { video_id: videoId } });
+};
+
+/**update coin function start */
+const updateVideos = async (newJsonData, dbData, db) => {
+  let newJson = await newJsonData.filter((o1) =>
+    dbData.some((o2) => o1.video_id === o2.video_id)
+  );
+  console.log("newJsonnewJson:", newJson)
+  for (let ele of newJson) {
+    await db.youtubeVideos.update(ele, { where: { video_id: ele.video_id } });
+  }
+};
 
 const saveMarketCoinDataIntoTable = async (data, db) => {
   let dbData = await db.marketcoin.findAll({ attributes: { exclude: "id" } });
@@ -495,3 +638,7 @@ const riskData = async (allRiskCoinArr, db, newObj, res) => {
     return 0;
   }
 }
+
+
+
+
