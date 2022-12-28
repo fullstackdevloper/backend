@@ -419,6 +419,51 @@ exports.getYoutubeVideos = [
   },
 ];
 
+exports.getYoutubeSingleVideos = [
+  body("data")
+    .isLength({ min: 1 })
+    .trim()
+    .withMessage("Data must be specified."),
+  (req, res) => {
+    db = connect();
+    try {
+      if(!req.query.videoId){
+        return apiResponse.notFoundResponse(
+          res,
+          "Video id is required!"
+        )
+      }
+      db.youtubeVideos
+        .findOne({  
+          where: { video_id: req.query.videoId }
+        }).then((data => {
+          if (!data) {
+            return apiResponse.notFoundResponse(
+              res,
+              "Video id is not found!"
+            )
+          }
+        }))
+      db.youtubeVideos
+        .findAll({
+          attributes: { exclude: ["id"] }, where: { video_id: req.query.videoId }, order: [["id", "ASC"]],
+        })
+        .then((data) => {
+          return apiResponse.successResponseWithData(
+            res,
+            "Data loaded successfully",
+            { items: data }
+          );
+        });
+    } catch (err) {
+      return apiResponse.ErrorResponse(
+        res,
+        err.message || "INTERNAL SERVER ERROR"
+      );
+    }
+  },
+];
+
 const saveVideosData = async (data, db, channelId) => {
   let dbData = await db.youtubeVideos.findAll({ where: { channelId } });
 
