@@ -182,6 +182,27 @@
         }
       }
     },
+    "/api/media/getVideo": {
+      "get": {
+        "tags": [
+          "Media Api's"
+        ],
+        "description": "Get Youtube Videos",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name":"videoId",
+            "in":"query"
+          }],
+        "responses": {
+          "200": {
+            "description": "Video get successfully!"
+          }
+        }
+      }
+    },
     "/api/charts/add": {
       "post": {
         "tags": [
