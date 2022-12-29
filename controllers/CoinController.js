@@ -219,14 +219,34 @@ exports.getMarketCoins = [
     db = connect();
     try {
       let query = {}
-      let { limit, page, risk_exist, category } = req.query;
+      let { limit, page, risk_exist, category,volume,market_cap } = req.query;
+      console.log("volume11:",volume)
+
+      if(volume){
+        volume = volume.split(",")
+      }
+      if(market_cap){
+        market_cap = market_cap.split(",")
+      }
+      console.log("volume22:",volume)
+      console.log("market_cap:",market_cap)
+
+      // volume =[2.15,21593559379.51]
+      // market_cap =[75218136,318603604427]
       limit = limit ? limit : 50;
       page = page ? page : 1
       risk_exist = risk_exist ? Number(risk_exist) : 0
       let offset = (Number(page) - 1) * limit;
-      query = risk_exist === 1 ? { where: { risk_exist: 1 }, offset, limit, order: [['id', 'ASC']] } : { offset, limit, order: [['market_cap_rank', 'ASC']] }
+      query = risk_exist === 1 ? { where: { risk_exist: 1 }, offset, limit, order: [['market_cap_rank', 'ASC']] } : { offset, limit, order: [['market_cap_rank', 'ASC']] }
 
-
+      if(volume && volume.length>0){
+        query = risk_exist === 1 ? { where: { risk_exist: 1,total_volume:{[Op.lt]:Number(volume[1]),
+        [Op.gt]: Number(volume[0]) }}, offset, limit, order: [['total_volume', 'ASC']] } : {where: { total_volume:{[Op.lt]:Number(volume[1]),
+          [Op.gt]: Number(volume[0]) }}, offset, limit, order: [['total_volume', 'ASC']] }
+      }
+      if(market_cap && market_cap.length>0){
+        query = risk_exist === 1 ? { where: { risk_exist: 1,market_cap:{[Op.lt]:Number(market_cap[1]), [Op.gt]: Number(market_cap[0])}}, offset, limit, order: [['market_cap', 'ASC']] } : {where: { market_cap:{[Op.lt]:Number(market_cap[1]), [Op.gt]: Number(market_cap[0])}}, offset, limit, order: [['market_cap', 'ASC']] }
+      }
       let data = await db.marketcoin.findAll(query)
       let categoryData;
       if (category) {
