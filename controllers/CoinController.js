@@ -255,15 +255,14 @@ exports.getMarketCoins = [
           { method: "get", headers: { "Content-Type": "application/json" } }
         );
         categoryData = await response.json();
-        console.log("categoryDatacategoryData:", categoryData)
+        console.log("categoryDatacategoryData:", categoryData[0])
         let coins = categoryData.map((coin, i) => {
-          return coin.symbol
+          return coin.id
         })
+        console.log("coinssssssss:",coins)
         var result = data.filter(function (o1) {
-          // filter out (!) items in result2
-
           return coins.some(function (o2) {
-            return o1.symbol === o2;          // assumes unique id
+            return o1.coin_id === o2;          // assumes unique id
           });
 
         })
