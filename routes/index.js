@@ -8,5 +8,6 @@ module.exports = function (app) {
     });
   
     app.post("/api/charts", chartRoutes);
+    
   };
   
