@@ -8,17 +8,16 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   chart.init({
-    userId: DataTypes.INTEGER,
+    user_id: DataTypes.INTEGER,
+    chart_id: DataTypes.STRING,
     name:DataTypes.STRING,
-    coin:DataTypes.STRING,
-    metric:DataTypes.STRING,
-    current_title:DataTypes.STRING,
+    metric_tab_data:DataTypes.JSON,
     configuration: DataTypes.JSON,
   }, {
     sequelize,
     modelName: 'charts',
     timestamps: false,
-    tableName: 'charts',
+    tableName: 'chart',
   }
   );
   return chart;

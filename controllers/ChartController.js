@@ -23,6 +23,7 @@ exports.addChart = [
         db = connect();
         let { body } = req;
         body.configuration = JSON.stringify(body.configuration)
+        body.metric_tab_data = JSON.stringify(body.metric_tab_data)
         let data = await db.chart.create(body);
         return apiResponse.successResponseWithData(res, "Chart save successfully!", data)
       }
@@ -58,6 +59,36 @@ exports.getChart = [
     }
   },
 ];
+
+exports.getChartsByUserId = [
+  async (req, res) => {
+    try {
+      let { user_id } = req.params;
+      user_id = user_id.toString();
+      if (!user_id) {
+        return apiResponse.notFoundResponse(res, "user_id is required!")
+      }
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return apiResponse.validationErrorWithData(
+          res,
+          "Validation Error.",
+          errors.array()
+        );
+      } else {
+        db = connect();
+        let data = await db.chart.findAll({where:{user_id}});
+        return apiResponse.successResponseWithData(res, "Charts get successfully!", data)
+      }
+    } catch (err) {
+      return apiResponse.ErrorResponse(
+        res,
+        err.message || "INTERNAL SERVER ERROR"
+      );
+    }
+  },
+];
+
 
 exports.updateChart = [
   async (req, res) => {
