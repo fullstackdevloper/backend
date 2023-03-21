@@ -1,6 +1,7 @@
 const { body, validationResult } = require("express-validator");
 const apiResponse = require("../helpers/apiResponse");
 const { connect } = require("../config/db.config");
+const Fred = require('fred-api');
 const fetch = (...args) =>
   import("node-fetch").then(({ default: fetch }) => fetch(...args));
 const { Op, NUMBER } = require("sequelize");
@@ -220,19 +221,14 @@ exports.getMarketCoins = [
     try {
       let query = {}
       let { limit, page, risk_exist, category,volume,market_cap } = req.query;
-      console.log("volume11:",volume)
 
       if(volume){
         volume = volume.split(",")
       }
+
       if(market_cap){
         market_cap = market_cap.split(",")
       }
-      console.log("volume22:",volume)
-      console.log("market_cap:",market_cap)
-
-      // volume =[2.15,21593559379.51]
-      // market_cap =[75218136,318603604427]
       limit = limit ? limit : 50;
       page = page ? page : 1
       risk_exist = risk_exist ? Number(risk_exist) : 0
@@ -255,16 +251,13 @@ exports.getMarketCoins = [
           { method: "get", headers: { "Content-Type": "application/json" } }
         );
         categoryData = await response.json();
-        console.log("categoryDatacategoryData:", categoryData[0])
         let coins = categoryData.map((coin, i) => {
           return coin.id
         })
-        console.log("coinssssssss:",coins)
         var result = data.filter(function (o1) {
           return coins.some(function (o2) {
             return o1.coin_id === o2;          // assumes unique id
           });
-
         })
         data = result
       }
@@ -284,6 +277,7 @@ exports.getMarketCoins = [
   },
 ];
 
+/**cron add here */
 exports.saveMarketCoins = [
   body("data")
     .isLength({ min: 1 })
@@ -336,7 +330,7 @@ exports.getExcelData = [
             volume: row.volume === '' ? 0 : row.volume,
             mc: row.mc === '' ? 0 : row.mc,
             cs: row.cs === '' ? 0 : row.cs
-          }
+          }          
           db.btc.update(body, { where: { closetime: { [Op.eq]: closetime } } }).then((dataUpdate) => {
           })
           data.push(row)
@@ -483,6 +477,30 @@ exports.getYoutubeSingleVideos = [
   },
 ];
 
+
+exports.getEconomicData = [
+  async (req, res) => {
+    try {
+      console.log("req.params.series_id:",req.params.series_id)
+      const fred = new Fred('fc78e9a39d4ef39017ad31c0268fcf40');
+      let series_id = req.params.series_id
+      fred.getSeriesObservations({series_id: series_id}, function(error, result) {
+        console.log("resulttttttttttttttt",result)
+      });
+      return apiResponse.successResponse(
+        res,
+        "Economic data fetch successfully from fred api!",
+      );
+      /**save data into marketcoin table code end*/
+    } catch (err) {
+      return apiResponse.ErrorResponse(
+        res,
+        err.message || "INTERNAL SERVER ERROR"
+      );
+    }
+  },
+];
+
 const saveVideosData = async (data, db, channelId) => {
   let dbData = await db.youtubeVideos.findAll({ where: { channelId } });
 
@@ -575,6 +593,7 @@ const saveMarketCoinDataIntoTable = async (data, db) => {
     "zil",
   ];
   let newJsonData = [];
+  
   data.map(async (res) => {
     /**check risk coin exist in db or not code start*/
     let newObj = {
@@ -618,10 +637,12 @@ const saveMarketCoinDataIntoTable = async (data, db) => {
 
   /**update coins from db comparing with coingeko api data coin*/
   updateCoins(newJsonData, dbData, db);
+
   /**save new entries into db table */
   let result = newJsonData.filter(
     (o1) => !dbData.some((o2) => o1.symbol === o2.symbol)
   );
+
   db.marketcoin.bulkCreate(result)
   let newObj1 = {}
   await db.marketcoin.findAll({ attributes: { exclude: "id" } }).then((allCoins) => {
@@ -702,7 +723,3 @@ const riskData = async (allRiskCoinArr, db, newObj, res) => {
     return 0;
   }
 }
-
-
-
-
