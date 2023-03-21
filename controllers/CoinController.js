@@ -485,12 +485,13 @@ exports.getEconomicData = [
       const fred = new Fred('fc78e9a39d4ef39017ad31c0268fcf40');
       let series_id = req.params.series_id
       fred.getSeriesObservations({series_id: series_id}, function(error, result) {
-        console.log("resulttttttttttttttt",result)
+        return apiResponse.successResponseWithData(
+          res,
+          "Economic data fetch successfully from fred api!",
+          {data:result,error:error}
+        
+        );
       });
-      return apiResponse.successResponse(
-        res,
-        "Economic data fetch successfully from fred api!",
-      );
       /**save data into marketcoin table code end*/
     } catch (err) {
       return apiResponse.ErrorResponse(
