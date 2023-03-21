@@ -203,6 +203,27 @@
         }
       }
     },
+    "/api/economicData/get/{series_id}": {
+      "get": {
+        "tags": [
+          "Chart Api's"
+        ],
+        "description": "Get Economic data",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name":"series_id",
+            "in":"path"
+          }],
+        "responses": {
+          "200": {
+            "description": "Data loaded successfully"
+          }
+        }
+      }
+    },
     "/api/charts/add": {
       "post": {
         "tags": [
