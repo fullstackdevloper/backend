@@ -203,6 +203,27 @@
         }
       }
     },
+    "/api/economicData/get/{series_id}": {
+      "get": {
+        "tags": [
+          "Chart Api's"
+        ],
+        "description": "Get Economic data",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name":"series_id",
+            "in":"path"
+          }],
+        "responses": {
+          "200": {
+            "description": "Data loaded successfully"
+          }
+        }
+      }
+    },
     "/api/charts/add": {
       "post": {
         "tags": [
@@ -220,14 +241,28 @@
             "schema": {
               "type": "object",
               "properties": {
-                "userId": {
-                  "type": "number",
+                "user_id": {
+                  "type": "string",
+                  "example": 1
+                },
+                "chart_id": {
+                  "type": "string",
                   "example": 1
                 },
                 "name": {
                   "type": "string",
                   "example": "chartname"
                 },
+                "metric_tab_data": {
+                  "type": "object",
+                  "example":  {
+                  "seriesName": "BTC Price",
+                  "color": "green",
+                  "yAxis": 1,
+                  "data": []
+                }
+                },
+                
                 "configuration": {
                   "type": "object",
                   "example": {
@@ -276,6 +311,28 @@
         "parameters": [
           {
             "name":"id",
+            "in":"path"
+          }],
+        "responses": {
+          "200": {
+            "description": "Data loaded successfully"
+          }
+        }
+      }
+    },
+    "/api/charts/{user_id}": {
+      "get": {
+        "tags": [
+          "Chart Api's"
+        ],
+        "description": "Get charts of user",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name":"user_id",
+            "type":"string",
             "in":"path"
           }],
         "responses": {
