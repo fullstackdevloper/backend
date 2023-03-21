@@ -16,6 +16,6 @@ module.exports = function (app) {
   app.get("/api/media/saveVideos",CoinController.saveYoutubeVideos);
   app.get("/api/media/getVideos",CoinController.getYoutubeVideos);  
   app.get("/api/media/getVideo",CoinController.getYoutubeSingleVideos);
-
+  app.get("/api/economicData/get/:series_id", CoinController.getEconomicData);
 
 };
