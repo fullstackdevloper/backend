@@ -480,18 +480,41 @@ exports.getYoutubeSingleVideos = [
 
 exports.getEconomicData = [
   async (req, res) => {
+    db = connect();
     try {
-      console.log("req.params.series_id:",req.params.series_id)
       const fred = new Fred('fc78e9a39d4ef39017ad31c0268fcf40');
       let series_id = req.params.series_id
-      fred.getSeriesObservations({series_id: series_id}, function(error, result) {
+      let getAllTable = Object.keys(db);
+      /**check series id is from database or not */
+      if(getAllTable.includes(series_id)){
+        /**fetch data here dynamically by change table table*/
+        let data = await db[series_id].findAll({attributes: ['closetime','closeprice','smadiff'] });
+        
+        /**format data same as fred api response start*/
+        data = data.map((ele,i)=>{
+          return{
+            date :ele.closetime,
+            value :ele.closeprice,
+            smadiff :ele.smadiff
+          }
+        })
+        let newData={};
+        newData.observations = data
+        /**format data same as fred api response end*/
         return apiResponse.successResponseWithData(
           res,
-          "Economic data fetch successfully from fred api!",
-          {data:result,error:error}
-        
+          "Economic data fetch successfully from backend!",
+          {data:newData}
         );
-      });
+      }else{
+        fred.getSeriesObservations({series_id: series_id}, function(error, result) {
+          return apiResponse.successResponseWithData(
+            res,
+            "Economic data fetch successfully from fred api!",
+            {data:result,error:error}
+          );
+        });
+      }   
       /**save data into marketcoin table code end*/
     } catch (err) {
       return apiResponse.ErrorResponse(
