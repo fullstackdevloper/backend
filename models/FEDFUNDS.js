@@ -7,8 +7,7 @@ module.exports = (sequelize, DataTypes) => {
     }
     FEDFUNDS.init({
         closetime: DataTypes.DATE,
-        closeprice: DataTypes.DOUBLE,
-        smadiff:DataTypes.DOUBLE,
+        closeprice: DataTypes.DOUBLE
     }, {
         sequelize,
         modelName: 'FEDFUNDS',
