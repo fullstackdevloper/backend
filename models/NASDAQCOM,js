@@ -1,0 +1,15 @@
+module.exports = (sequelize, DataTypes) => {
+  class NASDAQCOM extends Model {}
+  
+  NASDAQCOM.init({
+    closetime: DataTypes.DATE,
+    closeprice: DataTypes.DOUBLE,
+  }, {
+    sequelize,
+    modelName: 'NASDAQCOM',
+    timestamps: false,
+    tableName: 'NASDAQCOM',
+  });
+  
+  return NASDAQCOM;
+};
